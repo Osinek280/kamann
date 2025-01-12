@@ -1,7 +1,7 @@
 "use client"
 import React, { ReactNode } from 'react'
 import Link from 'next/link'
-import { Banknote, Folder, HamIcon, HomeIcon, LogOut, MessageSquare, Search, Settings, User, UserPlus } from 'lucide-react'
+import { Banknote, Folder, HomeIcon, LogOut, Menu, MessageSquare, Search, Settings, User, UserPlus } from 'lucide-react'
 
 import { ModeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
@@ -26,6 +26,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import Image from 'next/image'
 
 export function DropdownMenuDemo() {
   return (
@@ -81,12 +82,14 @@ export function DropdownMenuDemo() {
 export default function DashboardTopNav({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col">
-      <header className="flex h-14 lg:h-[70px] items-center gap-4 border-b px-3">
+      <header className="flex h-14 lg:h-[70px] items-center gap-4 border-b px-3 bg-[#1A2035] lg:bg-inherit">
         <MobileNavigation />
         <SearchBar />
-        <div className="flex items-center gap-2 ml-auto">
-          <DropdownMenuDemo />
-          <div className='hidden lg:block'>
+        <div className="ml-auto">
+          <div className='block lg:hidden'>
+            <DropdownMenuDemo />
+          </div>
+          <div className='hidden lg:flex items-center gap-2'>
             <MessageDropdown />
             <NotificationDropdown />
             <QuickActions />
@@ -103,13 +106,20 @@ function MobileNavigation() {
   return (
     <Dialog>
       <SheetTrigger className="min-[1024px]:hidden p-2 transition">
-        <HamIcon />
+        <Menu />
         <span className="sr-only">Menu</span>
       </SheetTrigger>
-      <SheetContent side="left">
+      <SheetContent side="left" className='bg-[#1A2035]'>
         <SheetHeader>
           <Link href="/">
-            <SheetTitle>Kamman</SheetTitle>
+            <SheetTitle className='flex justify-center'>
+            <Image
+              src="/logo_light.svg"
+              alt="Kamann logo"
+              height={40}
+              width={150}
+            />
+            </SheetTitle>
           </Link>
         </SheetHeader>
         <nav className="flex flex-col space-y-3 mt-[1rem]">

@@ -1,6 +1,5 @@
 "use client";
 
-import { Separator } from '@/components/ui/separator';
 import clsx from 'clsx';
 import {
   Banknote,
@@ -32,7 +31,6 @@ const navItems = [
     path: "/dashboard/settings",
     label: "Settings",
     icon: Settings,
-    separator: true, // Dodaj separator przed tym linkiem
   },
 ];
 
@@ -40,9 +38,9 @@ export default function DashboardSideBar() {
   const pathname = usePathname();
 
   return (
-    <div className="lg:block hidden border-r h-full bg-[#1A2035]">
+    <div className="lg:block hidden h-full bg-[#1A2035]">
       <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex h-[70px] items-center justify-between border-b px-6 w-full">
+        <div className="flex h-[70px] items-center justify-between px-6 w-full">
           <Link className="flex items-center gap-2 font-semibold" href="/">
             <Image
               src="/logo_light.svg"
@@ -54,23 +52,22 @@ export default function DashboardSideBar() {
       
         </div>
         <div className="flex-1 overflow-auto py-2">
-          <nav className="grid items-start px-4 text-sm font-medium">
-            {navItems.map(({ path, label, icon: Icon, separator }) => (
+          <nav className="grid items-start text-sm font-medium">
+            {navItems.map(({ path, label, icon: Icon }) => (
               <div key={path}>
-                {separator && <Separator className="my-3" />}
                 <Link
                   className={clsx(
-                    "flex items-center gap-2 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50",
+                    "flex items-center gap-2 rounded-lg px-3 py-2 text-gray-500 hover:text-[#6861CE] hover:bg-[#161B2C]",
                     {
-                      "flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-gray-900 transition-all dark:bg-gray-800 dark:text-gray-50": pathname === path,
+                      "text-[#6861CE] bg-[#161B2C]": pathname === path,
                     }
                   )}
                   href={path}
                 >
-                  <div className="border rounded-lg dark:bg-black dark:border-gray-800 border-gray-400 p-1 bg-white">
-                    <Icon className="h-3 w-3" />
+                  <div>
+                    <Icon className="h-4 w-4" />
                   </div>
-                  {label}
+                  <p className='text-primary-foreground'>{label}</p>
                 </Link>
               </div>
             ))}
