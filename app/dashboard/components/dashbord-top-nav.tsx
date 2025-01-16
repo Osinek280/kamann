@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Image from 'next/image'
+import { logout } from '@/app/auth/auth'
 
 export function DropdownMenuDemo() {
   return (
@@ -90,6 +91,9 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
             <DropdownMenuDemo />
           </div>
           <div className='hidden lg:flex items-center gap-2'>
+            <Button
+              onClick={logout}
+            >log out</Button>
             <MessageDropdown />
             <NotificationDropdown />
             <QuickActions />
