@@ -5,7 +5,7 @@ import {
   LoginFormSchema,
   SignupFormSchema,
 } from '@/app/auth/definitions';
-import { createSession, deleteSession } from './session';
+import { createSession } from './session';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -31,18 +31,6 @@ export async function signup(
   // 2. Prepare data for insertion into database
   const { firstName, LastName, email, password } = validatedFields.data;
 
-  // 3. Check if the user's email already exists
-  const existingUser = false
-
-  if (existingUser) {
-    return {
-      message: 'Email already exists, please use a different email or login.',
-    };
-  }
-
-  // Hash the user's password
-  // const hashedPassword = password;
-
   // 3. Insert the user into the database or call an Auth Provider's API
 
   const response = await fetch("http://localhost:8080/api/admin/users/register", {
@@ -58,7 +46,7 @@ export async function signup(
     })
   });
 
-  const responseData = await response.json(); // Jeśli odpowiedź zawiera JSON
+  const responseData = await response.json();
 
   if(response.status != 201) {
     return {
@@ -104,7 +92,7 @@ export async function login(
     })
   });
 
-  const responseData = await response.json(); // Jeśli odpowiedź zawiera JSON
+  const responseData = await response.json();
 
   // If user is not found, return early
   if (response.status != 200) {
@@ -114,11 +102,10 @@ export async function login(
   // 4. If login successful, create a session for the user and redirect
   const userId = responseData.token.toString();
   await createSession(userId);
-  deleteSession()
 }
 
 export async function logout() {
+  // delate cookies doesnt work on server-only (idk why)
   (await cookies()).delete('session');
   redirect('/sign-in');
-  // deleteSession();
 }
