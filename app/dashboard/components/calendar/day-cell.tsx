@@ -4,9 +4,17 @@ import { cn } from "@/lib/utils"
 interface Event {
   id: string;
   title: string;
-  start: Date;
-  end: Date;
-  color?: string;
+  description: string;
+  startTime: Date;
+  endTime: Date;
+  recurring: boolean;
+  createdById: number;
+  instructorId: number;
+  maxParticipants: number;
+  status: string;
+  currentParticipants: null;
+  eventTypeId: string;
+  eventTypeName: string;
 }
 
 interface DayCellProps {
@@ -44,7 +52,7 @@ export const DayCell: React.FC<DayCellProps> = ({ date, isCurrentMonth, isToday,
             <div 
               key={event.id} 
               className="text-xs p-1 rounded truncate"
-              style={{ backgroundColor: event.color + '33', color: event.color }}
+              // style={{ backgroundColor: event.color + '33', color: event.color }}
             >
               {event.title}
             </div>

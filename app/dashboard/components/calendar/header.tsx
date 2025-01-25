@@ -10,24 +10,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-interface Calendar {
-  id: string;
-  title: string;
-  color: string;
-}
-
 interface CalendarHeaderProps {
   currentDate: Date;
   onPrevPeriod: () => void;
   onNextPeriod: () => void;
   onViewChange: (view: 'week' | 'month') => void;
   currentView: 'week' | 'month';
-  myPlans: Calendar[],
 }
 
 
 export const CalendarHeader = ({
-  myPlans,
   currentDate,
   onPrevPeriod,
   onNextPeriod,
@@ -43,8 +35,6 @@ export const CalendarHeader = ({
       return `${format(start, 'd MMM')} - ${format(end, 'd MMM yyyy')}`;
     }
   };
-
-  console.log(myPlans)
 
   return (
     <>

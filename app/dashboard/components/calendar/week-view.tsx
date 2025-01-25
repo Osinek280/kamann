@@ -5,9 +5,17 @@ import { cn } from "@/lib/utils"
 interface Event {
   id: string;
   title: string;
-  start: Date;
-  end: Date;
-  color?: string;
+  description: string;
+  startTime: Date;
+  endTime: Date;
+  recurring: boolean;
+  createdById: number;
+  instructorId: number;
+  maxParticipants: number;
+  status: string;
+  currentParticipants: null;
+  eventTypeId: string;
+  eventTypeName: string;
 }
 
 interface WeekViewProps {
@@ -24,15 +32,15 @@ export const WeekView: React.FC<WeekViewProps> = ({ currentDate, events, today }
 
   const getEventsForDay = (day: Date) => {
     return events.filter(event => 
-      format(event.start, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ||
-      format(event.end, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ||
-      (event.start < day && event.end > day)
+      format(new Date(event.startTime), 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ||
+      format(new Date(event.endTime), 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ||
+      (new Date(event.startTime) < day && new Date(event.endTime) > day)
     );
   };
 
   const calculateEventPosition = (event: Event) => {
-    const startHour = event.start.getHours() + event.start.getMinutes() / 60;
-    const endHour = event.end.getHours() + event.end.getMinutes() / 60;
+    const startHour = new Date(event.startTime).getHours() + new Date(event.startTime).getMinutes() / 60;
+    const endHour = new Date(event.endTime).getHours() + new Date(event.endTime).getMinutes() / 60;
     const top = `${startHour * 100 / 24}%`;
     const height = `${(endHour - startHour) * 100 / 24}%`;
     return { top, height };
@@ -81,8 +89,8 @@ export const WeekView: React.FC<WeekViewProps> = ({ currentDate, events, today }
                     style={{
                       top,
                       height,
-                      backgroundColor: event.color + '33',
-                      color: event.color,
+                      // backgroundColor: event.color + '33',
+                      // color: event.color,
                     }}
                   >
                     {event.title}

@@ -1,20 +1,29 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DayCell } from './day-cell';
 // import { getDaysInMonth, getWeekDays } from '@/utils/dateUtils';
 import { addDays, startOfWeek, endOfWeek } from 'date-fns';
 import { getDayOfWeek, getDaysInMonth, getWeekDays } from '@/lib/dateUtils';
 import { WeekView } from './week-view';
 import { CalendarHeader } from './header';
+import { getEvents } from '@/app/api/events/getEvents';
 // import { getCalendarsList } from '@/utils/actions/get-calendars';
 
 interface Event {
   id: string;
   title: string;
-  start: Date;
-  end: Date;
-  color?: string;
+  description: string;
+  startTime: Date;
+  endTime: Date;
+  recurring: boolean;
+  createdById: number;
+  instructorId: number;
+  maxParticipants: number;
+  status: string;
+  currentParticipants: null;
+  eventTypeId: string;
+  eventTypeName: string;
 }
 
 interface Calendar {
@@ -26,7 +35,7 @@ interface Calendar {
 export const Calendar: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState<'week' | 'month'>('month');
-  const [ myPlans ] = useState<Calendar[]>([]) 
+  const [events, setEvents] = useState<Event[]>([])
 
   const prevPeriod = () => {
     if (currentView === 'month') {
@@ -66,51 +75,48 @@ export const Calendar: React.FC = () => {
 
   const today = new Date();
 
-  const events: Event[] = [
-    // { id: '1', title: 'Team Meeting', start: new Date(2024, 0, 3, 10, 0), end: new Date(2024, 0, 3, 11, 0), color: 'blue' },
-    // { id: '2', title: 'Project Kickoff', start: new Date(2024, 0, 3, 14, 0), end: new Date(2024, 0, 3, 16, 0), color: 'green' },
-    // { id: '3', title: 'Conference', start: new Date(2024, 0, 5, 2, 0), end: new Date(2024, 0, 7), color: 'purple' },
-    // { id: '4', title: 'Vacation', start: new Date(2024, 0, 15), end: new Date(2024, 0, 20), color: 'orange' },
-    // { id: '5', title: 'Deadline', start: new Date(2024, 0, 10, 9, 0), end: new Date(2024, 0, 10, 17, 0), color: 'red' },
-    // { id: '6', title: 'Workshop', start: new Date(2024, 0, 22, 13, 0), end: new Date(2024, 0, 24, 17, 0), color: 'indigo' },
-    // { id: '7', title: 'Review', start: new Date(2024, 0, 28, 10, 0), end: new Date(2024, 0, 28, 11, 30), color: 'pink' },
-    // { id: '8', title: 'Presentation', start: new Date(2024, 0, 28, 14, 0), end: new Date(2024, 0, 28, 15, 30), color: 'cyan' },
-  ];
-
   const getEventsForDate = (date: Date) => {
-    return events.filter(event => 
-      date >= new Date(event.start.setHours(0, 0, 0, 0)) &&
-      date <= new Date(event.end.setHours(23, 59, 59, 999))
-    );
-  };
+    return events.filter((event) => {
+      const eventStart = new Date(event.startTime)
+      const eventEnd = new Date(event.endTime)
+      const targetDate = new Date(date)
+
+      // Set all dates to midnight for date comparison
+      eventStart.setHours(0, 0, 0, 0)
+      eventEnd.setHours(0, 0, 0, 0)
+      targetDate.setHours(0, 0, 0, 0)
+
+      return targetDate >= eventStart && targetDate <= eventEnd
+    })
+  }
 
   const getEventsForWeek = () => {
-    const start = startOfWeek(currentDate);
-    const end = endOfWeek(currentDate);
+    const start = startOfWeek(currentDate, { weekStartsOn: 1 });
+    const end = endOfWeek(currentDate, { weekStartsOn: 1 });
     return events.filter(event => 
-      (event.start >= start && event.start <= end) ||
-      (event.end >= start && event.end <= end) ||
-      (event.start <= start && event.end >= end)
+      (new Date(event.startTime) >= start && new Date(event.startTime) <= end) ||
+      (new Date(event.endTime) >= start && new Date(event.endTime) <= end) ||
+      (new Date(event.startTime) <= start && new Date(event.endTime) >= end)
     );
   };
 
-  // useEffect(() => {
-  //   const updateCalendars = async () => {
-  //     try{
-  //       const { my_plans } = await getCalendarsList()
-  //       setMyPlans(my_plans)
-  //     }catch(err) {
-  //       console.log(err)
-  //     }
-  //   }
+  useEffect(() => {
+    const updateCalendars = async () => {
+      try{
+        const data = await getEvents()
+        setEvents(data)
+        console.log(data)
+      }catch(err) {
+        console.log(err)
+      }
+    }
 
-  //   updateCalendars()
-  // }, [])
+    updateCalendars()
+  }, [])
 
   return (
     <div className="h-full flex flex-col p-4">
       <CalendarHeader
-        myPlans={myPlans}
         currentDate={currentDate}
         onPrevPeriod={prevPeriod}
         onNextPeriod={nextPeriod}
