@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { parseJwt } from './app/auth/user';
 
 // 1. Specify protected and public routes
 const protectedRoutes = ['/dashboard'];
-const publicRoutes = ['/sign-in', '/sign-up', '/'];
+const publicRoutes = ['/sign-in', '/sign-up'];
 
 export default async function middleware(req: NextRequest) {
   // 2. Check if the current route is protected or public
@@ -11,26 +12,41 @@ export default async function middleware(req: NextRequest) {
   const isProtectedRoute = protectedRoutes.includes(path);
   const isPublicRoute = publicRoutes.includes(path);
 
-  console.log('Path:', path);
-  console.log('Is Protected Route:', isProtectedRoute);
-  console.log('Is Public Route:', isPublicRoute);
-
   // 3. Retrieve the session cookie
-  const sessionCookie = (await cookies()).get('session')?.value;
-
-  console.log('Session Cookie:', sessionCookie);
+  const sessionToken = (await cookies()).get('session')?.value;
 
   // 4. Redirect logic
-  if (isProtectedRoute && !sessionCookie) {
-    // Redirect unauthenticated users from protected routes to /sign-in
+  // Redirect unauthenticated users from protected routes to /sign-in
+  if (isProtectedRoute && !sessionToken) {
     return NextResponse.redirect(new URL('/sign-in', req.nextUrl));
   }
 
-  if (isPublicRoute && sessionCookie) {
-    // Redirect authenticated users away from public routes to /dashboard
+  // Redirect authenticated users away from public routes to /dashboard
+  if (isPublicRoute && sessionToken) {
     return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
   }
 
-  // Allow the request to proceed
+  if(!sessionToken) { 
+    return NextResponse.next(); 
+  }
+  
+  const { roles } = parseJwt(sessionToken)
+
+  console.log(roles);
+
+  if(path.startsWith('/dashboard/admin' ) && !roles.includes('ADMIN')) {
+    return NextResponse.redirect(new URL('/dashboard/instructor', req.nextUrl));
+  }
+  if(path.startsWith('/dashboard/instructor' ) && !roles.includes('INSTRUCTOR')) {
+    return NextResponse.redirect(new URL('/dashboard/client', req.nextUrl));
+  }
+  if(path.startsWith('/dashboard/client' ) && !roles.includes('CLIENT')) {
+    return NextResponse.redirect(new URL('/dashboard/admin', req.nextUrl));
+  }
+
+  if(path === '/dashboard') {
+    return NextResponse.redirect(new URL(`/dashboard/${roles[0].toLowerCase()}`, req.nextUrl));
+  }
+
   return NextResponse.next();
 }
