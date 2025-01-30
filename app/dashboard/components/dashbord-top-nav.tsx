@@ -12,7 +12,6 @@ import { SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/component
 import { MessageDropdown } from './message-dropdown'
 import { NotificationDropdown } from './notification-dropdown'
 import { QuickActions, actions } from './quick-actions'
- 
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,15 +27,26 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Image from 'next/image'
 import { logout } from '@/app/auth/auth'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export function DropdownMenuDemo() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Avatar className="h-8 w-8">
+            <AvatarImage alt="@username" />
+            <AvatarFallback>JD</AvatarFallback>
+          </Avatar>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">John Doe</p>
+            <p className="text-xs leading-none text-muted-foreground">john@example.com</p>
+          </div>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
@@ -83,22 +93,24 @@ export function DropdownMenuDemo() {
 export default function DashboardTopNav({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col">
-      <header className="flex h-14 lg:h-[70px] items-center gap-4 border-b px-3 bg-[#1A2035] lg:bg-inherit">
-        <MobileNavigation />
-        <SearchBar />
-        <div className="ml-auto">
-          <div className='block lg:hidden'>
-            <DropdownMenuDemo />
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className='flex h-14 lg:h-[70px] items-center gap-4 px-3'>
+          <MobileNavigation />
+          <SearchBar />
+          <div className="ml-auto">
+            <div className='block lg:hidden'>
+              <DropdownMenuDemo />
+            </div>
+            <div className='hidden lg:flex items-center gap-2'>
+              <Button
+                onClick={logout}
+              >log out</Button>
+              <MessageDropdown />
+              <NotificationDropdown />
+              <QuickActions />
+              <ModeToggle />
+            </div> 
           </div>
-          <div className='hidden lg:flex items-center gap-2'>
-            <Button
-              onClick={logout}
-            >log out</Button>
-            <MessageDropdown />
-            <NotificationDropdown />
-            <QuickActions />
-            <ModeToggle />
-          </div> 
         </div>
       </header>
       {children}
