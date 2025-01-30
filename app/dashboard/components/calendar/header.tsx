@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, CalendarIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CalendarIcon, PlusCircle, CheckCircle } from 'lucide-react';
 import { format, startOfWeek, endOfWeek } from 'date-fns';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import {
   DropdownMenu,
@@ -14,8 +15,8 @@ interface CalendarHeaderProps {
   currentDate: Date;
   onPrevPeriod: () => void;
   onNextPeriod: () => void;
-  onViewChange: (view: 'week' | 'month') => void;
   currentView: 'week' | 'month';
+  available: boolean
 }
 
 
@@ -23,9 +24,24 @@ export const CalendarHeader = ({
   currentDate,
   onPrevPeriod,
   onNextPeriod,
-  onViewChange,
   currentView,
+  available
 }: CalendarHeaderProps) => {
+
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set(name, value)
+ 
+      return params.toString()
+    },
+    [searchParams]
+  )
+
   const formatDate = () => {
     if (currentView === 'month') {
       return format(currentDate, 'MMMM yyyy');
@@ -60,14 +76,39 @@ export const CalendarHeader = ({
         <div className="flex items-center space-x-2 h-9">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-[140px]">
+                {
+                  available ? <><PlusCircle className="mr-2 h-4 w-4" /> Available</> : <><PlusCircle className="mr-2 h-4 w-4" />Registered</>
+                }
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => {
+                router.push(pathname + '?' + createQueryString('available', 'false'))
+              }}>
+                <CheckCircle className="mr-2 h-4 w-4" /> Registered
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => {
+                router.push(pathname + '?' + createQueryString('available', 'true'))
+              }}>
+                <PlusCircle className="mr-2 h-4 w-4" /> Available
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <Button variant="outline" className="w-[110px]">
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {currentView === 'week' ? 'Week' : 'Month'}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onViewChange('week')}>Week</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onViewChange('month')}>Month</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => {
+                router.push(pathname + '?' + createQueryString('view', 'week'))
+              }}>Week</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => 
+                router.push(pathname + '?' + createQueryString('view', 'month'))  
+              }>Month</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

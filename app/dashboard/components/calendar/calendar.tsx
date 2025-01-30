@@ -2,13 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { DayCell } from './day-cell';
-// import { getDaysInMonth, getWeekDays } from '@/utils/dateUtils';
-import { addDays, startOfWeek, endOfWeek } from 'date-fns';
+import { addDays, startOfWeek, endOfWeek, isWeekend } from 'date-fns';
 import { getDayOfWeek, getDaysInMonth, getWeekDays } from '@/lib/dateUtils';
 import { WeekView } from './week-view';
 import { CalendarHeader } from './header';
 import { getEvents } from '@/app/api/events/getEvents';
-// import { getCalendarsList } from '@/utils/actions/get-calendars';
+import { useSearchParams } from 'next/navigation';
 
 interface Event {
   id: string;
@@ -33,8 +32,16 @@ interface Calendar {
 }
 
 export const Calendar: React.FC = () => {
+
+  const searchParams = useSearchParams()
+
+
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [currentView, setCurrentView] = useState<'week' | 'month'>('month');
+  const currentView = (searchParams.get('view') as 'week' | 'month') || "month";
+  const available = searchParams.get('available') === 'true'
+
+  console.log(available)
+
   const [events, setEvents] = useState<Event[]>([])
 
   const prevPeriod = () => {
@@ -103,7 +110,7 @@ export const Calendar: React.FC = () => {
   useEffect(() => {
     const updateCalendars = async () => {
       try{
-        const data = await getEvents()
+        const data = await getEvents(available)
         setEvents(data)
         console.log(data)
       }catch(err) {
@@ -112,7 +119,7 @@ export const Calendar: React.FC = () => {
     }
 
     updateCalendars()
-  }, [])
+  }, [available])
 
   return (
     <div className="h-full flex flex-col p-4">
@@ -120,8 +127,8 @@ export const Calendar: React.FC = () => {
         currentDate={currentDate}
         onPrevPeriod={prevPeriod}
         onNextPeriod={nextPeriod}
-        onViewChange={setCurrentView}
         currentView={currentView}
+        available={available}
       />
       <div className="flex-grow">
         {currentView === 'month' ? (
@@ -136,6 +143,7 @@ export const Calendar: React.FC = () => {
             <div className="grid grid-cols-7 h-[calc(100%-2rem)]">
               {getCalendarDays().map(({ date, isCurrentMonth }) => (
                 <DayCell
+                  isWeekend={isWeekend(date)}
                   key={date.toISOString()}
                   date={date}
                   isCurrentMonth={isCurrentMonth}
