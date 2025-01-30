@@ -6,6 +6,43 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Styl dla pionowego scrollbara */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d1d5db; /* Zastąp odpowiednim kolorem */
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af; /* Zastąp odpowiednim kolorem */
+}
+
+/* Styl dla poziomego scrollbara */
+::-webkit-scrollbar-horizontal {
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  background-color: #d1d5db; /* Zastąp odpowiednim kolorem */
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:horizontal:hover {
+  background-color: #9ca3af; /* Zastąp odpowiednim kolorem */
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;
