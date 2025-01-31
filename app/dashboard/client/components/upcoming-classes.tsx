@@ -3,20 +3,30 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useState, useEffect } from "react"
-
-const upcomingClasses = [
-  { id: 1, name: "Salsa Beginners", instructor: "Maria Rodriguez", date: "2023-06-15", time: "18:00" },
-  { id: 2, name: "Hip Hop Intermediate", instructor: "Jake Smith", date: "2023-06-16", time: "19:30" },
-  { id: 3, name: "Ballet Advanced", instructor: "Emma Johnson", date: "2023-06-17", time: "17:00" },
-]
+import { getEvents } from "@/actions/getEvents"
+import { Event } from "@/types"
 
 export default function UpcomingClasses() {
   const [loading, setLoading] = useState(true)
+  const [events, setEvents] = useState<Event[]>([])
 
   useEffect(() => {
-    // Simulate API call
-    const timer = setTimeout(() => setLoading(false), 2000)
-    return () => clearTimeout(timer)
+    const updateEvents = async () => {
+      try {
+        const data = await getEvents(true)
+
+        const sortedEvents = data.sort((a: Event, b: Event) =>
+          new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+        )
+
+        setEvents(sortedEvents.slice(0, 3))
+        setLoading(false)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    updateEvents()
   }, [])
 
   return (
@@ -43,18 +53,18 @@ export default function UpcomingClasses() {
           </div>
         ) : (
           <div className="space-y-5">
-            {upcomingClasses.map((class_) => (
+            {events.map((class_) => (
               <div
                 key={class_.id}
                 className="flex items-center justify-between pb-5 last:pb-0 border-b last:border-b-0"
               >
                 <div>
-                  <p className="font-medium">{class_.name}</p>
-                  <p className="text-sm text-muted-foreground">with {class_.instructor}</p>
+                  <p className="font-medium">{class_.title}</p>
+                  <p className="text-sm text-muted-foreground">with {class_.instructorId}</p>
                 </div>
                 <div className="text-right">
-                  <Badge variant="secondary">{class_.date}</Badge>
-                  <p className="text-sm text-muted-foreground mt-1">{class_.time}</p>
+                  <Badge variant="secondary">{class_.startTime}</Badge>
+                  <p className="text-sm text-muted-foreground mt-1">{class_.startTime}</p>
                 </div>
               </div>
             ))}

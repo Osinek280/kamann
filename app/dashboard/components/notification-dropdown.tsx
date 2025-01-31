@@ -7,13 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-
-interface Notification {
-  id: string
-  type: 'user' | 'comment' | 'message' | 'like'
-  content: string
-  timestamp: Date
-}
+import { Notification } from '@/types'
 
 export function NotificationDropdown() {
   const notifications: Notification[] = [

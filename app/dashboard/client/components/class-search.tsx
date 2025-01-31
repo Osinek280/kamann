@@ -6,36 +6,34 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
-
-const danceClasses = [
-  { id: 1, name: "Salsa Beginners", instructor: "Maria Rodriguez", day: "Monday", time: "18:00" },
-  { id: 2, name: "Hip Hop Intermediate", instructor: "Jake Smith", day: "Tuesday", time: "19:30" },
-  { id: 3, name: "Ballet Advanced", instructor: "Emma Johnson", day: "Wednesday", time: "17:00" },
-  { id: 4, name: "Tango Beginners", instructor: "Carlos Mendoza", day: "Thursday", time: "20:00" },
-  { id: 5, name: "Contemporary Intermediate", instructor: "Sophia Lee", day: "Friday", time: "18:30" },
-  { id: 6, name: "Jazz Beginners", instructor: "Lila Johnson", day: "Saturday", time: "10:00" },
-  { id: 7, name: "Ballroom Advanced", instructor: "George Smith", day: "Sunday", time: "15:00" },
-  { id: 8, name: "Breakdance Intermediate", instructor: "Mike Chen", day: "Monday", time: "20:00" },
-  { id: 9, name: "Flamenco Beginners", instructor: "Isabella Gomez", day: "Tuesday", time: "18:30" },
-  { id: 10, name: "Modern Dance Advanced", instructor: "Sarah Brown", day: "Wednesday", time: "19:00" },
-]
+import { getEvents } from "@/actions/getEvents"
+import { Event } from "@/types"
 
 export default function ClassSearch() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedLevel, setSelectedLevel] = useState("")
+  const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Simulate API call
-    const timer = setTimeout(() => setLoading(false), 2000)
-    return () => clearTimeout(timer)
+    const updateEvents = async () => {
+      try{
+        const data = await getEvents(true)
+        setEvents(data)
+        setLoading(false);
+      }catch(err) {
+        console.log(err)
+      }
+    }
+
+    updateEvents();
   }, [])
 
-  const filteredClasses = danceClasses.filter(
-    (class_) =>
-      class_.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedLevel === "all" || class_.name.toLowerCase().includes(selectedLevel.toLowerCase())),
-  )
+  // const filteredClasses = danceClasses.filter(
+  //   (class_) =>
+  //     class_.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+  //     (selectedLevel === "all" || class_.name.toLowerCase().includes(selectedLevel.toLowerCase())),
+  // )
 
   return (
     <Card>
@@ -81,18 +79,18 @@ export default function ClassSearch() {
                       </div>
                     </div>
                   ))
-              : filteredClasses.map((class_) => (
+              : events.map((class_) => (
                   <div
                     key={class_.id}
                     className="flex items-center justify-between border-b pb-4 last:border-b-0 last:pb-0"
                   >
                     <div>
-                      <p className="font-medium">{class_.name}</p>
-                      <p className="text-sm text-muted-foreground">with {class_.instructor}</p>
+                      <p className="font-medium">{class_.title}</p>
+                      <p className="text-sm text-muted-foreground">with {class_.instructorId}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm">{class_.day}</p>
-                      <p className="text-sm text-muted-foreground">{class_.time}</p>
+                      <p className="text-sm">{class_.title}</p>
+                      <p className="text-sm text-muted-foreground">{class_.startTime}</p>
                     </div>
                   </div>
                 ))}

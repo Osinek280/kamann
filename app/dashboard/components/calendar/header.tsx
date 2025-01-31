@@ -10,15 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
-interface CalendarHeaderProps {
-  currentDate: Date;
-  onPrevPeriod: () => void;
-  onNextPeriod: () => void;
-  currentView: 'week' | 'month';
-  available: boolean
-}
-
+import { CalendarHeaderProps } from '@/types';
 
 export const CalendarHeader = ({
   currentDate,

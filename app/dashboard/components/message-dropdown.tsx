@@ -8,13 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-
-interface Message {
-  id: string
-  sender: string
-  content: string
-  timestamp: Date
-}
+import { Message } from '@/types'
 
 export function MessageDropdown() {
   const messages: Message[] = [

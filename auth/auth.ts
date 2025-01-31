@@ -4,7 +4,7 @@ import {
   FormState,
   LoginFormSchema,
   SignupFormSchema,
-} from '@/app/auth/definitions';
+} from '@/auth/definitions';
 import { createSession } from './session';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';

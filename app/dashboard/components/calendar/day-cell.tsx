@@ -3,37 +3,7 @@ import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DialogTrigger } from '@radix-ui/react-dialog';
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  startTime: Date;
-  endTime: Date;
-  recurring: boolean;
-  createdById: number;
-  instructorId: number;
-  maxParticipants: number;
-  status: string;
-  currentParticipants: number | null;
-  eventTypeId: string;
-  eventTypeName: string;
-}
-
-interface DayCellProps {
-  date: Date;
-  isCurrentMonth: boolean;
-  isToday: boolean;
-  isWeekend: boolean;
-  events: Event[];
-}
-
-const types = {
-  Pilates: "#3498db",  
-  crossFit: "#e74c3c", 
-  Dance: "#f39c12",  
-  Yoga: "#2ecc71"  
-};
+import { DayCellProps, EventDetailsModalProps, types } from '@/types';
 
 export const DayCell: React.FC<DayCellProps> = ({ date, isCurrentMonth, isToday, events, isWeekend }) => {
   const dayClasses = cn(
@@ -73,10 +43,6 @@ export const DayCell: React.FC<DayCellProps> = ({ date, isCurrentMonth, isToday,
     </div>
   );
 };
-
-interface EventDetailsModalProps {
-  event: Event | null
-}
 
 export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({ event }) => {
   if (!event) return null;

@@ -1,28 +1,7 @@
 import React from 'react';
 import { format, addDays, startOfWeek } from 'date-fns';
 import { cn } from "@/lib/utils"
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  startTime: Date;
-  endTime: Date;
-  recurring: boolean;
-  createdById: number;
-  instructorId: number;
-  maxParticipants: number;
-  status: string;
-  currentParticipants: null;
-  eventTypeId: string;
-  eventTypeName: string;
-}
-
-interface WeekViewProps {
-  currentDate: Date;
-  events: Event[];
-  today: string;
-}
+import { Event, WeekViewProps } from '@/types';
 
 export const WeekView: React.FC<WeekViewProps> = ({ currentDate, events, today }) => {
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });

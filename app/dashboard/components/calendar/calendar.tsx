@@ -6,30 +6,9 @@ import { addDays, startOfWeek, endOfWeek, isWeekend } from 'date-fns';
 import { getDayOfWeek, getDaysInMonth, getWeekDays } from '@/lib/dateUtils';
 import { WeekView } from './week-view';
 import { CalendarHeader } from './header';
-import { getEvents } from '@/app/api/events/getEvents';
+import { getEvents } from '@/actions/getEvents';
 import { useSearchParams } from 'next/navigation';
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  startTime: Date;
-  endTime: Date;
-  recurring: boolean;
-  createdById: number;
-  instructorId: number;
-  maxParticipants: number;
-  status: string;
-  currentParticipants: null;
-  eventTypeId: string;
-  eventTypeName: string;
-}
-
-interface Calendar {
-  id: string;
-  title: string;
-  color: string;
-}
+import { Event } from '@/types';
 
 export const Calendar: React.FC = () => {
 
@@ -39,10 +18,9 @@ export const Calendar: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const currentView = (searchParams.get('view') as 'week' | 'month') || "month";
   const available = searchParams.get('available') === 'true'
+  const [events, setEvents] = useState<Event[]>([])
 
   console.log(available)
-
-  const [events, setEvents] = useState<Event[]>([])
 
   const prevPeriod = () => {
     if (currentView === 'month') {

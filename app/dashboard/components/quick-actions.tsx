@@ -8,14 +8,7 @@ import {
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-
-interface QuickAction {
-  id: string
-  name: string
-  icon: React.ReactNode
-  color: string
-  darkColor: string
-}
+import { QuickAction } from '@/types'
 
 export const actions: QuickAction[] = [
   {

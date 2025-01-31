@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useFormStatus } from 'react-dom';
 import { Label } from '@/components/ui/label';
-import { signup } from '@/app/auth/auth';
+import { signup } from '@/auth/auth';
 import { useActionState } from 'react';
 
 export function SignupForm() {
