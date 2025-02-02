@@ -5,29 +5,30 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useState, useEffect } from "react"
 import { getEvents } from "@/actions/getEvents"
 import { Event } from "@/types"
+import { format } from "date-fns"
 
 export default function UpcomingClasses() {
   const [loading, setLoading] = useState(true)
   const [events, setEvents] = useState<Event[]>([])
 
-  useEffect(() => {
-    const updateEvents = async () => {
-      try {
-        const data = await getEvents(true)
+  // useEffect(() => {
+  //   const updateEvents = async () => {
+  //     try {
+  //       const data = await getEvents(true)
 
-        const sortedEvents = data.sort((a: Event, b: Event) =>
-          new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-        )
+  //       const sortedEvents = data.sort((a: Event, b: Event) =>
+  //         a.startTime.getTime() - b.startTime.getTime()
+  //       )
 
-        setEvents(sortedEvents.slice(0, 3))
-        setLoading(false)
-      } catch (err) {
-        console.error(err)
-      }
-    }
+  //       setEvents(sortedEvents.slice(0, 3))
+  //       setLoading(false)
+  //     } catch (err) {
+  //       console.error(err)
+  //     }
+  //   }
 
-    updateEvents()
-  }, [])
+  //   updateEvents()
+  // }, [])
 
   return (
     <Card className="h-full flex flex-col">
@@ -60,11 +61,11 @@ export default function UpcomingClasses() {
               >
                 <div>
                   <p className="font-medium">{class_.title}</p>
-                  <p className="text-sm text-muted-foreground">with {class_.instructorId}</p>
+                  <p className="text-sm text-muted-foreground">with {class_.instructorFullName}</p>
                 </div>
                 <div className="text-right">
-                  <Badge variant="secondary">{class_.startTime}</Badge>
-                  <p className="text-sm text-muted-foreground mt-1">{class_.startTime}</p>
+                  <Badge variant="secondary">{format(class_.startTime, "yyyy-MM-dd")}</Badge>
+                  <p className="text-sm text-muted-foreground mt-1">{format(class_.startTime, "hh:mm")}</p>
                 </div>
               </div>
             ))}

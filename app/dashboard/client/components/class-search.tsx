@@ -1,39 +1,49 @@
-'use client'
+"use client"
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
 import { getEvents } from "@/actions/getEvents"
-import { Event } from "@/types"
+import { type Event, types } from "@/types"
+import { format } from "date-fns"
+import { EventModal } from "./eventModal"
 
 export default function ClassSearch() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedLevel, setSelectedLevel] = useState("")
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
     const updateEvents = async () => {
-      try{
+      try {
         const data = await getEvents(true)
         setEvents(data)
-        setLoading(false);
-      }catch(err) {
+        setLoading(false)
+      } catch (err) {
         console.log(err)
+        setLoading(false)
       }
     }
 
-    updateEvents();
+    updateEvents()
   }, [])
 
-  // const filteredClasses = danceClasses.filter(
-  //   (class_) =>
-  //     class_.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-  //     (selectedLevel === "all" || class_.name.toLowerCase().includes(selectedLevel.toLowerCase())),
-  // )
+  const filteredEvents = events.filter(
+    (el) =>
+      el.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedLevel === "all" || el.eventTypeName.toLowerCase().includes(selectedLevel.toLowerCase())),
+  )
+
+  const handleEventClick = (event: Event) => {
+    setSelectedEvent(event)
+    setIsModalOpen(true)
+  }
 
   return (
     <Card>
@@ -55,9 +65,12 @@ export default function ClassSearch() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Levels</SelectItem>
-              <SelectItem value="beginners">Beginners</SelectItem>
-              <SelectItem value="intermediate">Intermediate</SelectItem>
-              <SelectItem value="advanced">Advanced</SelectItem>
+              <SelectSeparator />
+              {types.map((el, i) => (
+                <SelectItem key={i} value={el.title.toLowerCase()}>
+                  {el.title}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Button className="w-full sm:w-auto">Search</Button>
@@ -79,24 +92,27 @@ export default function ClassSearch() {
                       </div>
                     </div>
                   ))
-              : events.map((class_) => (
+              : filteredEvents.map((class_) => (
                   <div
                     key={class_.id}
-                    className="flex items-center justify-between border-b pb-4 last:border-b-0 last:pb-0"
+                    className="flex items-center justify-between border-b pb-4 last:border-b-0 last:pb-0 cursor-pointer hover:bg-gray-100 p-2 rounded"
+                    onClick={() => handleEventClick(class_)}
                   >
                     <div>
                       <p className="font-medium">{class_.title}</p>
-                      <p className="text-sm text-muted-foreground">with {class_.instructorId}</p>
+                      <p className="text-sm text-muted-foreground">with {class_.instructorFullName}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm">{class_.title}</p>
-                      <p className="text-sm text-muted-foreground">{class_.startTime}</p>
+                      <p className="text-sm">{format(class_.startTime, "EEEE")}</p>
+                      <p className="text-sm text-muted-foreground">{format(class_.startTime, "HH:mm")}</p>
                     </div>
                   </div>
                 ))}
           </div>
         </ScrollArea>
       </CardContent>
+      <EventModal event={selectedEvent} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </Card>
   )
 }
+

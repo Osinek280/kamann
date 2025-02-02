@@ -16,5 +16,15 @@ export async function getEvents(available: boolean) {
 
   const data = await response.json()
 
-  return data
+  console.log(data)
+
+  const test = data.map((el: { startTime: string, endTime: string }) => ({
+    ...el,
+    startTime: new Date(el.startTime),
+    endTime: new Date(el.endTime)
+  }))
+
+  console.log(test)
+
+  return test
 }

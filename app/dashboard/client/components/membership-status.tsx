@@ -3,7 +3,9 @@ import { getMembership } from "@/actions/getMembership"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Skeleton } from "@/components/ui/skeleton"
+import { format } from "date-fns"
 import { useState, useEffect } from "react"
+import { enUS } from "date-fns/locale"
 
 export default function MembershipStatus() {
   const [loading, setLoading] = useState(true)
@@ -31,8 +33,6 @@ export default function MembershipStatus() {
 
   const progress = (membershipData.entrancesLeft / 2) * 100
 
-  console.log(progress);
-
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="pb-3">
@@ -42,11 +42,11 @@ export default function MembershipStatus() {
       <CardContent className="flex-grow flex flex-col justify-between">
         <div className="space-y-6">
           <div>
-            <p className="text-sm font-medium mb-1">Membership Type</p>
+            <p className="text-sm font-medium mb-1">Expired Date</p>
             {loading ? (
               <Skeleton className="h-8 w-24" />
             ) : (
-              <p className="text-2xl font-bold">{membershipData.endDate}</p>
+              <p className="text-2xl font-bold">{format(membershipData.endDate, 'd MMMM yyyy', { locale: enUS })}</p>
             )}
           </div>
           <div>

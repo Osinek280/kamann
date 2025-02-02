@@ -56,7 +56,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({ event }) =
     return `${hours}h ${minutes}min`;
   };
 
-  const eventTypeColor = types[event.eventTypeName as keyof typeof types] || "#ccc";
+  const eventTypeColor = types.find(item => item.title === event.eventTypeName)?.color || '#ccc';
 
   return (
     <Dialog>
@@ -101,10 +101,10 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({ event }) =
           <div>
             <p className="text-sm font-medium">Time</p>
             <p className="text-sm text-gray-500">
-              {formatTime(new Date(event.startTime))} - {formatTime(new Date(event.endTime))}
+              {formatTime(event.startTime)} - {formatTime(event.endTime)}
             </p>
             <p className="text-sm text-gray-500">
-              Duration: {getDuration(new Date(event.startTime), new Date(event.endTime))}
+              Duration: {getDuration(event.startTime, event.endTime)}
             </p>
           </div>
 

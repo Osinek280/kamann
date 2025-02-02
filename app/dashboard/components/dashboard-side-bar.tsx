@@ -38,42 +38,27 @@ export default function DashboardSideBar() {
   const pathname = usePathname();
 
   return (
-    <div className="lg:block hidden h-full bg-[#1A2035]">
-      <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex h-[70px] items-center justify-between px-6 w-full">
-          <Link className="flex items-center gap-2 font-semibold" href="/">
-            <Image
-              src="/logo_light.svg"
-              alt="Kamann logo"
-              height={40}
-              width={150}
-            />
-          </Link>
-      
-        </div>
-        <div className="flex-1 overflow-auto py-2">
-          <nav className="grid items-start text-sm font-medium">
-            {navItems.map(({ path, label, icon: Icon }) => (
-              <div key={path}>
-                <Link
-                  className={clsx(
-                    "flex items-center gap-2 rounded-lg px-3 py-2 text-gray-500 hover:text-[#6861CE] hover:bg-[#161B2C]",
-                    {
-                      "text-[#6861CE] bg-[#161B2C]": pathname === path,
-                    }
-                  )}
-                  href={path}
-                >
-                  <div>
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <p className='text-primary-foreground'>{label}</p>
-                </Link>
-              </div>
-            ))}
-          </nav>
-        </div>
+  <div className="hidden md:flex md:flex-col md:w-64 md:bg-gray-900 md:text-gray-100">
+      <div className="p-6">
+        <h2 className="text-2xl font-bold text-white">Dance Studio</h2>
       </div>
+      <nav className="flex-1 px-4 space-y-2">
+        {navItems.map((item) => {
+          const isActive = pathname === item.path
+          return (
+            <Link
+              key={item.path}
+              href={item.path}
+              className={`flex items-center p-3 rounded-lg transition-colors duration-200 ${
+                isActive ? "bg-gray-800 text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white"
+              }`}
+            >
+              <item.icon className="w-5 h-5 mr-3" />
+              {item.label}
+            </Link>
+          )
+        })}
+      </nav>
     </div>
   );
 }

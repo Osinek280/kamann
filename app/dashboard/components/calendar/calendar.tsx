@@ -62,9 +62,9 @@ export const Calendar: React.FC = () => {
 
   const getEventsForDate = (date: Date) => {
     return events.filter((event) => {
-      const eventStart = new Date(event.startTime)
-      const eventEnd = new Date(event.endTime)
-      const targetDate = new Date(date)
+      const eventStart = event.startTime
+      const eventEnd = event.endTime
+      const targetDate = date
 
       // Set all dates to midnight for date comparison
       eventStart.setHours(0, 0, 0, 0)
@@ -79,9 +79,9 @@ export const Calendar: React.FC = () => {
     const start = startOfWeek(currentDate, { weekStartsOn: 1 });
     const end = endOfWeek(currentDate, { weekStartsOn: 1 });
     return events.filter(event => 
-      (new Date(event.startTime) >= start && new Date(event.startTime) <= end) ||
-      (new Date(event.endTime) >= start && new Date(event.endTime) <= end) ||
-      (new Date(event.startTime) <= start && new Date(event.endTime) >= end)
+      (event.startTime >= start && event.startTime <= end) ||
+      (event.endTime >= start && event.endTime <= end) ||
+      (event.startTime <= start && event.endTime >= end)
     );
   };
 

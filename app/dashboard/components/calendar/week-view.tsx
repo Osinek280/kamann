@@ -11,15 +11,15 @@ export const WeekView: React.FC<WeekViewProps> = ({ currentDate, events, today }
 
   const getEventsForDay = (day: Date) => {
     return events.filter(event => 
-      format(new Date(event.startTime), 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ||
-      format(new Date(event.endTime), 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ||
-      (new Date(event.startTime) < day && new Date(event.endTime) > day)
+      format(event.startTime, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ||
+      format(event.endTime, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ||
+      (event.startTime < day && event.endTime > day)
     );
   };
 
   const calculateEventPosition = (event: Event) => {
-    const startHour = new Date(event.startTime).getHours() + new Date(event.startTime).getMinutes() / 60;
-    const endHour = new Date(event.endTime).getHours() + new Date(event.endTime).getMinutes() / 60;
+    const startHour = event.startTime.getHours() + event.startTime.getMinutes() / 60;
+    const endHour = event.endTime.getHours() + event.endTime.getMinutes() / 60;
     const top = `${startHour * 100 / 24}%`;
     const height = `${(endHour - startHour) * 100 / 24}%`;
     return { top, height };
