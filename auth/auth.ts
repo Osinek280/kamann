@@ -33,7 +33,7 @@ export async function signup(
 
   // 3. Insert the user into the database or call an Auth Provider's API
 
-  const response = await fetch("http://localhost:8080/api/admin/users/register", {
+  const response = await fetch(`${process.env.BACKEND_URL}/admin/users/register`, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'

@@ -7,16 +7,16 @@ import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, Sele
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
 import { getEvents } from "@/actions/getEvents"
-import { type Event, types } from "@/types"
+import { Occurrence, types } from "@/types"
 import { format } from "date-fns"
-import { EventModal } from "./eventModal"
+// import { EventModal } from "./eventModal"
 
 export default function ClassSearch() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedLevel, setSelectedLevel] = useState("")
-  const [events, setEvents] = useState<Event[]>([])
+  const [events, setEvents] = useState<Occurrence[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<Occurrence | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
@@ -34,13 +34,13 @@ export default function ClassSearch() {
     updateEvents()
   }, [])
 
-  const filteredEvents = events.filter(
-    (el) =>
-      el.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedLevel === "all" || el.eventTypeName.toLowerCase().includes(selectedLevel.toLowerCase())),
-  )
+  // const filteredEvents = events.filter(
+  //   (el) =>
+  //     el.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+  //     (selectedLevel === "all" || el.eventTypeName.toLowerCase().includes(selectedLevel.toLowerCase())),
+  // )
 
-  const handleEventClick = (event: Event) => {
+  const handleEventClick = (event: Occurrence) => {
     setSelectedEvent(event)
     setIsModalOpen(true)
   }
@@ -92,26 +92,26 @@ export default function ClassSearch() {
                       </div>
                     </div>
                   ))
-              : filteredEvents.map((class_) => (
+              : events.map((occ) => (
                   <div
-                    key={class_.id}
-                    className="flex items-center justify-between border-b pb-4 last:border-b-0 last:pb-0 cursor-pointer hover:bg-gray-100 p-2 rounded"
-                    onClick={() => handleEventClick(class_)}
+                    key={occ.occurrenceId}
+                    className="flex items-center justify-between border-b pb-4 last:border-b-0 last:pb-0 cursor-pointer hover:bg-primary-foreground p-2 rounded"
+                    onClick={() => handleEventClick(occ)}
                   >
                     <div>
-                      <p className="font-medium">{class_.title}</p>
-                      <p className="text-sm text-muted-foreground">with {class_.instructorFullName}</p>
+                      <p className="font-medium">{occ.title}</p>
+                      <p className="text-sm text-muted-foreground">with {occ.instructorFullName}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm">{format(class_.startTime, "EEEE")}</p>
-                      <p className="text-sm text-muted-foreground">{format(class_.startTime, "HH:mm")}</p>
+                      <p className="text-sm">{format(occ.start, "EEEE")}</p>
+                      <p className="text-sm text-muted-foreground">{format(occ.start, "HH:mm")}</p>
                     </div>
                   </div>
                 ))}
           </div>
         </ScrollArea>
       </CardContent>
-      <EventModal event={selectedEvent} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      {/* <EventModal event={selectedEvent} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} /> */}
     </Card>
   )
 }

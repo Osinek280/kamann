@@ -9,29 +9,33 @@ import { enUS } from "date-fns/locale"
 
 export default function MembershipStatus() {
   const [loading, setLoading] = useState(true)
-  const [membershipData, setMembershipData] = useState({
-    endDate: "undefined",
-    entrancesLeft: 0,
-  })
+  interface MembershipData {
+    endDate: Date;
+    entrancesLeft: number;
+  }
+
+  const [membershipData, setMembershipData] = useState<MembershipData | null>(null)
 
   useEffect(() => {
     const updateEvents = async () => {
-      try{
+      try {
         const data = await getMembership()
 
-        console.log(data)
-
-        setLoading(false);
-        setMembershipData(data);
-      }catch(err) {
-        console.log(err)
+        if (!data || !data.endDate || data.entrancesLeft === undefined) {
+          setMembershipData(null) // Brak aktywnego członkostwa
+        } else {
+          setMembershipData(data)
+        }
+      } catch (err) {
+        console.error("Error fetching membership:", err)
+        setMembershipData(null)
+      } finally {
+        setLoading(false)
       }
     }
 
-    updateEvents();
+    updateEvents()
   }, [])
-
-  const progress = (membershipData.entrancesLeft / 2) * 100
 
   return (
     <Card className="h-full flex flex-col">
@@ -40,34 +44,35 @@ export default function MembershipStatus() {
         <CardDescription>Your current membership details</CardDescription>
       </CardHeader>
       <CardContent className="flex-grow flex flex-col justify-between">
-        <div className="space-y-6">
-          <div>
-            <p className="text-sm font-medium mb-1">Expired Date</p>
-            {loading ? (
-              <Skeleton className="h-8 w-24" />
-            ) : (
-              <p className="text-2xl font-bold">{format(membershipData.endDate, 'd MMMM yyyy', { locale: enUS })}</p>
-            )}
+        {loading ? (
+          <div className="space-y-6">
+            <Skeleton className="h-8 w-24" />
+            <Skeleton className="h-8 w-32 mb-3" />
+            <Skeleton className="h-6 w-full" />
           </div>
-          <div>
-            <p className="text-sm font-medium mb-1">Classes This Month</p>
-            {loading ? (
-              <>
-                <Skeleton className="h-8 w-32 mb-3" />
-                <Skeleton className="h-6 w-full" />
-              </>
-            ) : (
-              <>
-                <p className="text-2xl font-bold">
-                  {membershipData.entrancesLeft} / 2
-                </p>
-                <Progress value={progress} className="mt-3" />
-              </>
-            )}
+        ) : membershipData ? (
+          <div className="space-y-6">
+            <div>
+              <p className="text-sm font-medium mb-1">Expired Date</p>
+              <p className="text-2xl font-bold">
+                {format(membershipData.endDate, 'd MMMM yyyy', { locale: enUS })}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-medium mb-1">Classes This Month</p>
+              <p className="text-2xl font-bold">
+                {membershipData.entrancesLeft} / 2
+              </p>
+              <Progress value={(membershipData.entrancesLeft / 2) * 100} className="mt-3" />
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="text-center text-gray-500">
+            <p className="text-lg font-semibold">No active membership found</p>
+            <p className="text-sm">Please contact support for assistance.</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   )
 }
-

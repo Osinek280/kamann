@@ -6,7 +6,7 @@ export async function getMembership() {
 
   const sessionToken = (await cookies()).get('session')?.value;
 
-  const response = await fetch('http://localhost:8080/api/client/membership-cards/active', {
+  const response = await fetch(`${process.env.BACKEND_URL}/client/membership-cards/active`, {
     headers: {
       "Authorization": `Bearer ${sessionToken}`
     }

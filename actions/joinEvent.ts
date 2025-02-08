@@ -6,7 +6,7 @@ export async function joinEvent(eventId: string) {
 
   const sessionToken = (await cookies()).get('session')?.value;
 
-  const response = await fetch(`http://localhost:8080/api/client.attendance/${eventId}/join`, {
+  const response = await fetch(`${process.env.BACKEND_URL}/client.attendance/${eventId}/join`, {
     headers: {
       "Authorization": `Bearer ${sessionToken}`
     }

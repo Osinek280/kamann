@@ -1,3 +1,12 @@
+export interface Occurrence {
+  occurrenceId: number;
+  title: string;
+  start: Date;
+  end: Date;
+  instructorFullName: number,
+  eventId: number;
+}
+
 export interface Event {
   id: string;
   title: string;
@@ -14,26 +23,6 @@ export interface Event {
   eventTypeId: string;
   eventTypeName: string;
 }
-
-  // "id": 4,
-  // "title": "CrossFit Extreme",
-  // "description": "Push your limits with this CrossFit session.",
-  // "startDate": "2025-02-04",
-  // "endDate": "2025-02-04",
-  // "time": "06:00:00",
-  // "recurring": false,
-  // "createdById": 1,
-  // "instructorId": 5,
-  // "instructorFullName": "Lucas Brown",
-  // "maxParticipants": 20,
-  // "status": "UPCOMING",
-  // "currentParticipants": 0,
-  // "eventTypeId": 4,
-  // "eventTypeName": "CrossFit",
-  // "frequency": "NONE",
-  // "daysOfWeek": null,
-  // "recurrenceEndDate": null
-
 
 export interface Message {
   id: string
@@ -62,7 +51,7 @@ export interface DayCellProps {
   isCurrentMonth: boolean;
   isToday: boolean;
   isWeekend: boolean;
-  events: Event[];
+  events: Occurrence[];
 }
 
 interface type {
@@ -87,7 +76,7 @@ export interface CalendarHeaderProps {
 
 export interface WeekViewProps {
   currentDate: Date;
-  events: Event[];
+  events: Occurrence[];
   today: string;
 }
 

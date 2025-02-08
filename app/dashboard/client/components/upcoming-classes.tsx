@@ -4,31 +4,31 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useState, useEffect } from "react"
 import { getEvents } from "@/actions/getEvents"
-import { Event } from "@/types"
+import { Occurrence } from "@/types"
 import { format } from "date-fns"
 
 export default function UpcomingClasses() {
   const [loading, setLoading] = useState(true)
-  const [events, setEvents] = useState<Event[]>([])
+  const [events, setEvents] = useState<Occurrence[]>([])
 
-  // useEffect(() => {
-  //   const updateEvents = async () => {
-  //     try {
-  //       const data = await getEvents(true)
+  useEffect(() => {
+    const updateEvents = async () => {
+      try {
+        const data = await getEvents(true)
 
-  //       const sortedEvents = data.sort((a: Event, b: Event) =>
-  //         a.startTime.getTime() - b.startTime.getTime()
-  //       )
+        const sortedEvents = data.sort((a: Occurrence, b: Occurrence) =>
+          a.start.getTime() - b.start.getTime()
+        )
 
-  //       setEvents(sortedEvents.slice(0, 3))
-  //       setLoading(false)
-  //     } catch (err) {
-  //       console.error(err)
-  //     }
-  //   }
+        setEvents(sortedEvents.slice(0, 3))
+        setLoading(false)
+      } catch (err) {
+        console.error(err)
+      }
+    }
 
-  //   updateEvents()
-  // }, [])
+    updateEvents()
+  }, [])
 
   return (
     <Card className="h-full flex flex-col">
@@ -54,18 +54,18 @@ export default function UpcomingClasses() {
           </div>
         ) : (
           <div className="space-y-5">
-            {events.map((class_) => (
+            {events.map((occ) => (
               <div
-                key={class_.id}
+                key={occ.occurrenceId}
                 className="flex items-center justify-between pb-5 last:pb-0 border-b last:border-b-0"
               >
                 <div>
-                  <p className="font-medium">{class_.title}</p>
-                  <p className="text-sm text-muted-foreground">with {class_.instructorFullName}</p>
+                  <p className="font-medium">{occ.title}</p>
+                  <p className="text-sm text-muted-foreground">with {occ.instructorFullName}</p>
                 </div>
                 <div className="text-right">
-                  <Badge variant="secondary">{format(class_.startTime, "yyyy-MM-dd")}</Badge>
-                  <p className="text-sm text-muted-foreground mt-1">{format(class_.startTime, "hh:mm")}</p>
+                  <Badge variant="secondary">{format(occ.start, "yyyy-MM-dd")}</Badge>
+                  <p className="text-sm text-muted-foreground mt-1">{format(occ.start, "hh:mm")}</p>
                 </div>
               </div>
             ))}

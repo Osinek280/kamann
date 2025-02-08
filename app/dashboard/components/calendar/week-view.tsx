@@ -1,7 +1,7 @@
 import React from 'react';
 import { format, addDays, startOfWeek } from 'date-fns';
 import { cn } from "@/lib/utils"
-import { Event, WeekViewProps } from '@/types';
+import { Occurrence, WeekViewProps } from '@/types';
 
 export const WeekView: React.FC<WeekViewProps> = ({ currentDate, events, today }) => {
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
@@ -11,15 +11,15 @@ export const WeekView: React.FC<WeekViewProps> = ({ currentDate, events, today }
 
   const getEventsForDay = (day: Date) => {
     return events.filter(event => 
-      format(event.startTime, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ||
-      format(event.endTime, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ||
-      (event.startTime < day && event.endTime > day)
+      format(event.start, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ||
+      format(event.end, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ||
+      (event.start < day && event.end > day)
     );
   };
 
-  const calculateEventPosition = (event: Event) => {
-    const startHour = event.startTime.getHours() + event.startTime.getMinutes() / 60;
-    const endHour = event.endTime.getHours() + event.endTime.getMinutes() / 60;
+  const calculateEventPosition = (event: Occurrence) => {
+    const startHour = event.start.getHours() + event.start.getMinutes() / 60;
+    const endHour = event.end.getHours() + event.end.getMinutes() / 60;
     const top = `${startHour * 100 / 24}%`;
     const height = `${(endHour - startHour) * 100 / 24}%`;
     return { top, height };
@@ -60,7 +60,7 @@ export const WeekView: React.FC<WeekViewProps> = ({ currentDate, events, today }
                 const { top, height } = calculateEventPosition(event);
                 return (
                   <div
-                    key={event.id}
+                    key={event.occurrenceId}
                     className={cn(
                       "absolute left-0 right-0 p-1 text-xs overflow-hidden",
                       "rounded truncate"

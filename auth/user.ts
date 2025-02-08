@@ -21,7 +21,7 @@ export function parseJwt(token: string) {
 
 export async function getUser(token: string) {
 
-  const response = await fetch("http://localhost:8080/api/admin/users/logged", {
+  const response = await fetch(`${process.env.BACKEND_URL}/admin/users/logged`, {
     headers: {
       "Authorization": `Bearer ${token}`
     }

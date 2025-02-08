@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DialogTrigger } from '@radix-ui/react-dialog';
-import { DayCellProps, EventDetailsModalProps, types } from '@/types';
+import { DayCellProps, EventDetailsModalProps } from '@/types';
 
 export const DayCell: React.FC<DayCellProps> = ({ date, isCurrentMonth, isToday, events, isWeekend }) => {
   const dayClasses = cn(
@@ -30,8 +30,15 @@ export const DayCell: React.FC<DayCellProps> = ({ date, isCurrentMonth, isToday,
       </div>
       {isCurrentMonth && (
         <div className="mt-1 space-y-1">
-          {events.slice(0, 2).map((event) => (
-            <EventDetailsModal event={event} key={event.id} />
+          {events.slice(0, 2).map((occ) => (
+            <div
+              key={occ.occurrenceId}
+              className="text-xs p-1 rounded truncate"
+              style={{ backgroundColor: '#f39c12' }}
+            >
+              {occ.title}
+            </div>
+            // <EventDetailsModal event={event} key={event.occurrenceId} />
           ))}
           {events.length > 2 && (
             <div className="text-xs font-medium">
@@ -56,7 +63,8 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({ event }) =
     return `${hours}h ${minutes}min`;
   };
 
-  const eventTypeColor = types.find(item => item.title === event.eventTypeName)?.color || '#ccc';
+  // const eventTypeColor = types.find(item => item.title === event.eventTypeName)?.color || '#ccc';
+  const eventTypeColor = "#ccc"
 
   return (
     <Dialog>

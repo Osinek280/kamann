@@ -8,7 +8,7 @@ import { WeekView } from './week-view';
 import { CalendarHeader } from './header';
 import { getEvents } from '@/actions/getEvents';
 import { useSearchParams } from 'next/navigation';
-import { Event } from '@/types';
+import { Occurrence } from '@/types';
 
 export const Calendar: React.FC = () => {
 
@@ -18,7 +18,7 @@ export const Calendar: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const currentView = (searchParams.get('view') as 'week' | 'month') || "month";
   const available = searchParams.get('available') === 'true'
-  const [events, setEvents] = useState<Event[]>([])
+  const [events, setEvents] = useState<Occurrence[]>([])
 
   console.log(available)
 
@@ -62,8 +62,8 @@ export const Calendar: React.FC = () => {
 
   const getEventsForDate = (date: Date) => {
     return events.filter((event) => {
-      const eventStart = event.startTime
-      const eventEnd = event.endTime
+      const eventStart = event.start
+      const eventEnd = event.end
       const targetDate = date
 
       // Set all dates to midnight for date comparison
@@ -79,9 +79,9 @@ export const Calendar: React.FC = () => {
     const start = startOfWeek(currentDate, { weekStartsOn: 1 });
     const end = endOfWeek(currentDate, { weekStartsOn: 1 });
     return events.filter(event => 
-      (event.startTime >= start && event.startTime <= end) ||
-      (event.endTime >= start && event.endTime <= end) ||
-      (event.startTime <= start && event.endTime >= end)
+      (event.start >= start && event.start <= end) ||
+      (event.end >= start && event.end <= end) ||
+      (event.start <= start && event.end >= end)
     );
   };
 
@@ -90,7 +90,7 @@ export const Calendar: React.FC = () => {
       try{
         const data = await getEvents(available)
         setEvents(data)
-        console.log(data)
+        console.log("huj: ", data)
       }catch(err) {
         console.log(err)
       }
